@@ -321,7 +321,7 @@ class PaginateRoute
             return $url;
         }
 
-        return trim($url, '/')."/{$this->pageKeyword}/{$page}";
+        return trim($url, '/')."/{$page}";
     }
 
     /**
@@ -329,14 +329,13 @@ class PaginateRoute
      */
     public function registerMacros()
     {
-        $pageKeyword = $this->pageKeyword;
         $router = $this->router;
 
-        $router->macro('paginate', function ($uri, $action) use ($pageKeyword, $router) {
+        $router->macro('paginate', function ($uri, $action) use ($router) {
             $router->group(
                 ['middleware' => 'Spatie\PaginateRoute\SetPageMiddleware'],
-                function () use ($pageKeyword, $router, $uri, $action) {
-                    $router->get($uri.'/{pageQuery?}', $action)->where('pageQuery', $pageKeyword.'/[0-9]+');
+                function () use ($router, $uri, $action) {
+                    $router->get($uri.'/{pageQuery?}', $action)->where('pageQuery', '[0-9]+');
                 });
         });
     }
